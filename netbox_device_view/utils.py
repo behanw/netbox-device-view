@@ -7,16 +7,19 @@ import re
 
 def process_interfaces(interfaces, ports_chassis, dev):
     if interfaces is not None:
+        regex1 = r"^(?P<type>())((?P<dev>[0-9]+)\/)?((?P<module>[0-9]+)\/)((?P<port>[0-9]+))$"
+        regex2 = r"^(?P<type>([a-zA-Z\-_]*))(\/|(?P<dev>[0-9]+).|\s)?((?P<module>[0-9]+).|\s)?((?P<port>[0-9]+))$"
         for itf in interfaces:
             if itf.type == "virtual" or itf.type == "lag":
                 continue
-            regex = r"^(?P<type>([a-zA-Z\-_]*))(\/|(?P<dev>[0-9]+).|\s)?((?P<module>[0-9]+).|\s)?((?P<port>[0-9]+))$"
-            matches = re.search(regex, itf.name.lower())
+            matches = re.search(regex1, itf.name.lower())
+            if not matches:
+                matches = re.search(regex2, itf.name.lower())
             if matches:
                 itf.stylename = (
-                    (matches["type"] or "")
-                    + (matches["module"] or "")
-                    + "-"
+                    (matches["type"] or "p")
+                    + (matches["dev"] + "-" if matches["dev"] else "")
+                    + (matches["module"] + "-" if matches["module"] else "")
                     + matches["port"]
                 )
             else:
