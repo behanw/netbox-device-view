@@ -1,4 +1,4 @@
-from dcim.models import ConsolePort
+from dcim.models import ConsolePort, ConsoleServerPort
 from .models import DeviceView
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -66,6 +66,11 @@ def prepare(obj):
                 ports_chassis,
                 list(ports_chassis.keys())[0],
             )
+            ports_chassis = process_ports(
+                ConsoleServerPort.objects.filter(device_id=obj.id),
+                ports_chassis,
+                list(ports_chassis.keys())[0],
+            )
         else:
             for member in obj.virtual_chassis.members.all():
                 dv[member.vc_position] = DeviceView.objects.get(
@@ -79,6 +84,11 @@ def prepare(obj):
                 )
                 ports_chassis = process_ports(
                     ConsolePort.objects.filter(device_id=member.id),
+                    ports_chassis,
+                    member.vc_position,
+                )
+                ports_chassis = process_ports(
+                    ConsoleServerPort.objects.filter(device_id=member.id),
                     ports_chassis,
                     member.vc_position,
                 )
