@@ -10,7 +10,7 @@ def process_interfaces(interfaces, ports_chassis, dev):
         regex1 = r"^(?P<type>())((?P<dev>[0-9]+)\/)?((?P<module>[0-9]+)\/)((?P<port>[0-9]+))$"
         regex2 = r"^(?P<type>([a-zA-Z\-_]*))(\/|(?P<dev>[0-9]+).|\s)?((?P<module>[0-9]+).|\s)?((?P<port>[0-9]+))$"
         for itf in interfaces:
-            if itf.type == "virtual" or itf.type == "lag":
+            if itf.type == "virtual" or itf.type == "bridge" or itf.type == "lag":
                 continue
             matches = re.search(regex1, itf.name.lower())
             if not matches:
