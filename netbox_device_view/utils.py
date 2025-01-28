@@ -64,7 +64,7 @@ def prepare(obj):
             ports_chassis = process_ports(
                 ConsolePort.objects.filter(device_id=obj.id),
                 ports_chassis,
-                list(ports_chassis.keys())[0],
+                obj.name,
             )
             ports_chassis = process_ports(
                 ConsoleServerPort.objects.filter(device_id=obj.id),
